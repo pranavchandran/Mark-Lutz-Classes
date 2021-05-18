@@ -218,3 +218,52 @@ N = Squares(1,10)
 print(list(N.gen()))
 
 # Multiple iterators with yield
+S = Squares(1,3).gen()
+for i in S:
+    for j in S:
+        print('%s : %s' %(i, j))
+        
+#File squares_nonyield.py
+class SquaresA:
+    def __init__(self, start, stop):
+        self.start = start
+        self.stop = stop
+        
+    def __iter__(self):
+        return SquaresIterA(self.start, self.stop)
+        
+class SquaresIterA:
+    def __init__(self, start, stop):
+        self.value = start - 1
+        self.stop = stop
+    # iterator making 
+    def __next__(self):
+        if self.value == self.stop:
+            raise StopIteration
+        self.value += 1
+        return self.value ** 2
+        
+b = SquaresIterA(1, 10)
+print(next(b), next(b))    
+
+# Skipper_yield.py
+# Another __iter__ + yield generator
+# Instance scope retained normally
+# Local scope state saved auto
+
+class SkipObjectA:
+    def __init__(self, wrapped):
+        self.wrapped = wrapped
+        
+    def __iter__(self):
+        offset = 0
+        while offset < len(self.wrapped):
+            item = self.wrapped[offset]
+            offset += 2
+            yield item
+            
+a1 = SkipObjectA([1,2,3,4])
+print(list(a1))
+
+    
+            
