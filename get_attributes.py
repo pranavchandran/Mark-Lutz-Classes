@@ -107,3 +107,81 @@ l = Both(5)
 
 print(l)
 print(str(l), repr(l))
+
+'''
+To ensure that a custom display is run in all contexts regardless of the container, code
+__repr__ , not __str__ ; the former is run in all cases if the latter doesn’t apply, including
+nested appearances:
+'''
+class Printer:
+    def __init__(self, val):
+        self.val = val
+    def __repr__(self):
+        return str(self.val)
+        
+objs = [Printer(2), Printer(3)]
+for z in objs: print(z)
+list(objs)
+print(objs)
+
+# Right-Side and In-Place Uses: __radd__ and __iadd__
+class Addi(object):
+    def __init__(self, value=0):
+        self.data = value
+    def __add__(self, other):
+        return self.data + other
+        
+x = Addi(5)
+print(x + 2) #right hand side will work
+# print(2+x) #left hand side not work
+
+# filename commuter.py
+# now left hand and right hand will work added 'radd'
+class Commuter:
+    def __init__(self, val):
+        self.val = val
+    def __add__(self, other):
+        print('add', self.val, other)
+        return self.val + other
+    def __radd__(self, other):
+        print('radd', self.val + other)
+        return other + self.val
+        
+x = Commuter(4)
+print(x+4)
+print(4+x)        
+
+# update beta
+class Commuter2:
+    def __init__(self, val):
+        self.val = val
+    def __add__(self, other):
+        print('add', self.val, other)
+        return self.val + other
+    def __radd__(self, other):
+        return self.__add__(other)
+
+# updated beta
+class Commuter3:
+    def __init__(self, val):
+        self.val = val
+    def __add__(self, other):
+        print('add', self.val, other)
+        return self.val + other
+    def __radd__(self, other):
+        return self + other
+        
+# another beta
+class Commuter4:
+    def __init__(self, val):
+        self.val = val
+    def __add__(self, other):
+        print('add', self.val, other)
+        return self.val + other
+    __radd__ = __add__
+    
+c = Commuter4(10)
+print(c + 10)
+print(10+c)
+        
+# Propagating class type
