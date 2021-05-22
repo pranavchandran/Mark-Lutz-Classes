@@ -66,5 +66,41 @@ obj = cb3.changeColor
 obj()
 
 # Comparisons: __lt__, __gt__, and Others
+class C:
+    data = 'spam'
+    def __gt__(self, other):
+        return self.data > other
+    def __lt__(self, other):
+        return self.data < other
+        
+X = C()
+print(X>'ham')
+print(X<'hame')
 
+# Boolean Tests: __bool__ and __len__
+class Truth:
+    def __bool__(self): return True
+    
+X = Truth()
+if X: print('yes')
 
+class Falsy:
+    def __bool__(self): return False
+    
+f = Falsy()
+print('yes') if f else print("sorry") 
+
+# Object Destruction: __del__
+
+class Life:
+    def __init__(self, name='unknown'):
+        print('Hello' + name)
+        self.name = name
+    def live(self):
+        print(self.name)
+    def __del__(self):
+        print('Goodbye' + self.name)
+        
+brian = Life('Brian')
+
+print(brian)
